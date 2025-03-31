@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  react-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: react-m-site
+    ports:
+      - "3453:3453"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    restart: unless-stopped
+    network_mode: "host"
+  
+  tuna_frontend_m-site:
+    image: alpine
+    command: >
+      /bin/sh -c "
+      apk add --no-cache curl &&
+      curl -sSLf https://get.tuna.am | sh &&
+      tuna config save-token \${TUNA_TOKEN} &&
+      tuna http 3453 --domain=\${TUNA_SUBDOMAIN}"
+    environment:
+      - TUNA_TOKEN=${TUNA_TOKEN}
+      - TUNA_TWA_SUBDOMAIN=m-international.net.ru
+    depends_on:
+      - react-app
+    restart: always
+    network_mode: "host"
