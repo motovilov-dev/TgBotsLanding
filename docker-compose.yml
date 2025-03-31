@@ -5,7 +5,6 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    container_name: react-m-site
     ports:
       - "3453:3453"
     volumes:
